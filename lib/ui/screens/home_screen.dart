@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:saviour/data/model/near_by_issue.dart';
 import 'package:saviour/ui/widgets/home_widget.dart';
 import 'package:saviour/ui/screens/upload_issue_screen.dart';
 
@@ -15,33 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   List<Widget> _widgetOptions = <Widget>[
     HomeWidget(
-      nearByIssueList: [
-        NearByIssue(
-            imageUrl:
-                "https://static.toiimg.com/photo/msid-69771713/69771713.jpg?64652",
-            title: "title",
-            subTitle: "subTitle"),
-        NearByIssue(
-            imageUrl:
-                "https://static.toiimg.com/photo/msid-69771713/69771713.jpg?64652",
-            title: "title",
-            subTitle: "subTitle"),
-        NearByIssue(
-            imageUrl:
-                "https://static.toiimg.com/photo/msid-69771713/69771713.jpg?64652",
-            title: "title",
-            subTitle: "subTitle"),
-        NearByIssue(
-            imageUrl:
-                "https://static.toiimg.com/photo/msid-69771713/69771713.jpg?64652",
-            title: "title",
-            subTitle: "subTitle"),
-        NearByIssue(
-            imageUrl:
-                "https://static.toiimg.com/photo/msid-69771713/69771713.jpg?64652",
-            title: "title",
-            subTitle: "subTitle"),
-      ],
+      nearByIssueList: [],
     ),
     // Text(
     //   'Index 1: Upload',

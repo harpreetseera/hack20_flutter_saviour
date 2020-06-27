@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:saviour/data/issue.dart';
+import 'package:saviour/service/firebase_service.dart';
 
 class UploadIssueScreen extends StatefulWidget {
   UploadIssueScreen({Key key, this.imagePath}) : super(key: key);
@@ -14,7 +17,11 @@ class UploadIssueScreen extends StatefulWidget {
 class _UploadIssueScreenState extends State<UploadIssueScreen> {
   final _formKey = GlobalKey<FormState>();
   final List<String> categoryList = ["Garbage", "Water"];
+  final FirebaseService firebaseService = FirebaseServiceImpl();
   List<String> selectedChoices = List();
+
+  final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +73,7 @@ class _UploadIssueScreenState extends State<UploadIssueScreen> {
                           }
                           return null;
                         },
+                        controller: titleController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Title',
@@ -81,6 +89,7 @@ class _UploadIssueScreenState extends State<UploadIssueScreen> {
                           }
                           return null;
                         },
+                        controller: descriptionController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Description',
@@ -97,8 +106,19 @@ class _UploadIssueScreenState extends State<UploadIssueScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: RaisedButton(
                         onPressed: () {
-                          if (_formKey.currentState.validate()) {
-                            print("Validated");
+                          if (_formKey.currentState.validate() && selectedChoices.isNotEmpty) {
+                            final issue = Issue(
+                              id: null,
+                              description: descriptionController.text,
+                              title: titleController.text,
+                              imageUrl: "asnkjn",
+                              tags: selectedChoices,
+                              status: "OPEN",
+                              users: [],
+                              location: GeoPoint(-10,10),
+                              createdBy: "abc"
+                            );
+                            firebaseService.createIssue(issue);
                           }
                         },
                         child: Text('Upload'),
