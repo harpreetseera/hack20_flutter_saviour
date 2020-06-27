@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1064794627676",
+    "firebase_url": "https://fluttersaviour.firebaseio.com",
+    "project_id": "fluttersaviour",
+    "storage_bucket": "fluttersaviour.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1064794627676:android:5c0ec4ebe3ae447d8e1099",
+        "android_client_info": {
+          "package_name": "com.example.saviour"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1064794627676-oa4utgip5ovijch382knsigu5ckc683a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.saviour",
+            "certificate_hash": "b71eb8cf980f16b5705ecebee3f586a957ae487d"
+          }
+        },
+        {
+          "client_id": "1064794627676-ogoben94umjdcdi3m18240stabimehvp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3NcnMTImazzIz9cIzy7qS6dIgYoduGQg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1064794627676-ogoben94umjdcdi3m18240stabimehvp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
