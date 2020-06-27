@@ -36,8 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final picker = ImagePicker();
 
-    Future getImage() async {
-      final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    Future getImage(ImageSource imageSource) async {
+      final pickedFile = await picker.getImage(source: imageSource);
       if (pickedFile == null) return;
       if (pickedFile.path == null) return;
       Navigator.of(context).push(
@@ -49,6 +49,34 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
+    _showImagePickerSheet() {
+      showModalBottomSheet(
+          context: context,
+          builder: (BuildContext bc) {
+            return Container(
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.camera),
+                      title: new Text('Take from camera'),
+                      onTap: () => {
+                            Navigator.pop(context),
+                            getImage(ImageSource.camera),
+                          }),
+                  new ListTile(
+                    leading: new Icon(Icons.photo),
+                    title: new Text('Choose from gallery'),
+                    onTap: () => {
+                      Navigator.pop(context),
+                      getImage(ImageSource.gallery),
+                    },
+                  ),
+                ],
+              ),
+            );
+          });
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Saviour'),
@@ -56,7 +84,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
       floatingActionButton: FloatingActionButton(
-        onPressed: getImage,
+        onPressed: () {
+          _showImagePickerSheet();
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
