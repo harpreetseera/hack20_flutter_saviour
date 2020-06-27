@@ -23,6 +23,7 @@ Future<String> signInWithGoogle() async {
   assert(user.uid == currentUser.uid);
   print(user.uid);
   Saviour.prefs.setString(Saviour.PREF_UID, user.uid);
+  Saviour.prefs.setString(Saviour.PREF_EMAIL, user.email);
   Saviour.prefs.setBool(Saviour.PREF_LOGGED_IN, true);
   return 'signInWithGoogle succeeded: $user';
 }

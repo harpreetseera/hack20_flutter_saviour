@@ -5,5 +5,6 @@ class Saviour {
   
   static const String PREF_LOGGED_IN = "prefLoggedIn";
   static const String PREF_UID = "prefUId";
+  static const String PREF_EMAIL = "prefEmail";
   
 }

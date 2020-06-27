@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:saviour/data/issue.dart';
 import 'package:saviour/service/firebase_service.dart';
+import 'package:saviour/utils/guid.dart';
+import 'package:saviour/utils/saviour.dart';
 
 class UploadIssueScreen extends StatefulWidget {
   UploadIssueScreen({Key key, this.imagePath}) : super(key: key);
@@ -106,17 +108,20 @@ class _UploadIssueScreenState extends State<UploadIssueScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: RaisedButton(
                         onPressed: () {
-                          if (_formKey.currentState.validate() && selectedChoices.isNotEmpty) {
+                          if (_formKey.currentState.validate() &&
+                              selectedChoices.isNotEmpty) {
                             final issue = Issue(
-                              id: null,
+                              id: Guid().generateV4(),
                               description: descriptionController.text,
                               title: titleController.text,
                               imageUrl: "asnkjn",
                               tags: selectedChoices,
                               status: "OPEN",
                               users: [],
-                              location: GeoPoint(-10,10),
-                              createdBy: "abc"
+                              location: GeoPoint(-10, 10),
+                              createdBy:
+                                  Saviour.prefs.getString(Saviour.PREF_EMAIL) ??
+                                      "email_unavailable",
                             );
                             firebaseService.createIssue(issue);
                           }
