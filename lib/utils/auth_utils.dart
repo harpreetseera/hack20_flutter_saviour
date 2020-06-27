@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:saviour/utils/saviour.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -16,18 +17,17 @@ Future<String> signInWithGoogle() async {
 
   final AuthResult authResult = await _auth.signInWithCredential(credential);
   final FirebaseUser user = authResult.user;
-
   assert(!user.isAnonymous);
   assert(await user.getIdToken() != null);
-
   final FirebaseUser currentUser = await _auth.currentUser();
   assert(user.uid == currentUser.uid);
-
+  print(user.uid);
+  Saviour.prefs.setString(Saviour.PREF_UID, user.uid);
+  Saviour.prefs.setBool(Saviour.PREF_LOGGED_IN, true);
   return 'signInWithGoogle succeeded: $user';
 }
 
-void signOutGoogle() async{
+void signOutGoogle() async {
   await googleSignIn.signOut();
-
   print("User Sign Out");
 }
