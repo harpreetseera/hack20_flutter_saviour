@@ -114,23 +114,27 @@ class _UploadIssueScreenState extends State<UploadIssueScreen> {
                               selectedChoices.isNotEmpty) {
                             Location location =
                                 await LocationResult.getLocationNow();
-                            final issue = Issue(
-                              id: Guid().generateV4(),
-                              description: descriptionController.text,
-                              title: titleController.text,
-                              imageUrl: "asnkjn",
-                              tags: selectedChoices,
-                              status: "OPEN",
-                              users: [
-                                Saviour.prefs.getString(Saviour.PREF_EMAIL) ??
-                                    "email_unavailable"
-                              ],
-                              location: GeoPoint(location.lat, location.long),
-                              createdBy:
+                            firebaseService
+                                .uploadImage(new File(widget.imagePath))
+                                .then((imageUrl) {
+                              final issue = Issue(
+                                id: Guid().generateV4(),
+                                description: descriptionController.text,
+                                title: titleController.text,
+                                imageUrl: imageUrl,
+                                tags: selectedChoices,
+                                status: "OPEN",
+                                users: [
                                   Saviour.prefs.getString(Saviour.PREF_EMAIL) ??
-                                      "email_unavailable",
-                            );
-                            firebaseService.createIssue(issue);
+                                      "email_unavailable"
+                                ],
+                                location: GeoPoint(location.lat, location.long),
+                                createdBy: Saviour.prefs
+                                        .getString(Saviour.PREF_EMAIL) ??
+                                    "email_unavailable",
+                              );
+                              firebaseService.createIssue(issue);
+                            });
                           }
                         },
                         child: Text('Upload'),
