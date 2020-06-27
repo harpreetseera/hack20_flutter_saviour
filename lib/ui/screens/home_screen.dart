@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -32,13 +35,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    File _image;
+    final picker = ImagePicker();
+
+    Future getImage() async {
+      final pickedFile = await picker.getImage(source: ImageSource.gallery);
+      if (pickedFile.path == null) return;
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BottomNavigationBar Sample'),
+        title: const Text('Sample'),
+        automaticallyImplyLeading: false,
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: getImage,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -46,8 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Text('Home'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            title: Text('Business'),
+            icon: Icon(null),
+            title: Text(''),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.school),
