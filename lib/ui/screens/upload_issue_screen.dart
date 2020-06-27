@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:saviour/data/issue.dart';
+import 'package:saviour/data/location.dart';
 import 'package:saviour/service/firebase_service.dart';
 import 'package:saviour/utils/guid.dart';
+import 'package:saviour/utils/location_util.dart';
 import 'package:saviour/utils/saviour.dart';
 
 class UploadIssueScreen extends StatefulWidget {
@@ -107,9 +109,11 @@ class _UploadIssueScreenState extends State<UploadIssueScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: RaisedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (_formKey.currentState.validate() &&
                               selectedChoices.isNotEmpty) {
+                            Location location =
+                                await LocationResult.getLocationNow();
                             final issue = Issue(
                               id: Guid().generateV4(),
                               description: descriptionController.text,
@@ -117,8 +121,11 @@ class _UploadIssueScreenState extends State<UploadIssueScreen> {
                               imageUrl: "asnkjn",
                               tags: selectedChoices,
                               status: "OPEN",
-                              users: [],
-                              location: GeoPoint(-10, 10),
+                              users: [
+                                Saviour.prefs.getString(Saviour.PREF_EMAIL) ??
+                                    "email_unavailable"
+                              ],
+                              location: GeoPoint(location.lat, location.long),
                               createdBy:
                                   Saviour.prefs.getString(Saviour.PREF_EMAIL) ??
                                       "email_unavailable",

@@ -1,7 +1,3 @@
-// Copyright 2018 The Flutter Architecture Sample Authors. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found
-// in the LICENSE file.
-
 import 'dart:math';
 
 /// A UUID generator, useful for generating unique IDs for your Todos.
@@ -17,8 +13,6 @@ import 'dart:math';
 class Guid {
   final Random _random = Random();
 
-  /// Generate a version 4 (random) uuid. This is a uuid scheme that only uses
-  /// random numbers as the source of the generated uuid.
   String generateV4() {
     // Generate xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx / 8-4-4-4-12.
     final int special = 8 + _random.nextInt(4);
