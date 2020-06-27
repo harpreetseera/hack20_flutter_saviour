@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:saviour/data/model/near_by_issue.dart';
+import 'package:saviour/ui/widgets/home_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,15 +14,40 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Timeline',
-      style: optionStyle,
+  List<Widget> _widgetOptions = <Widget>[
+    HomeWidget(
+      nearByIssueList: [
+        NearByIssue(
+            imageUrl:
+                "https://static.toiimg.com/photo/msid-69771713/69771713.jpg?64652",
+            title: "title",
+            subTitle: "subTitle"),
+        NearByIssue(
+            imageUrl:
+                "https://static.toiimg.com/photo/msid-69771713/69771713.jpg?64652",
+            title: "title",
+            subTitle: "subTitle"),
+        NearByIssue(
+            imageUrl:
+                "https://static.toiimg.com/photo/msid-69771713/69771713.jpg?64652",
+            title: "title",
+            subTitle: "subTitle"),
+        NearByIssue(
+            imageUrl:
+                "https://static.toiimg.com/photo/msid-69771713/69771713.jpg?64652",
+            title: "title",
+            subTitle: "subTitle"),
+        NearByIssue(
+            imageUrl:
+                "https://static.toiimg.com/photo/msid-69771713/69771713.jpg?64652",
+            title: "title",
+            subTitle: "subTitle"),
+      ],
     ),
-    Text(
-      'Index 1: Upload',
-      style: optionStyle,
-    ),
+    // Text(
+    //   'Index 1: Upload',
+    //   style: optionStyle,
+    // ),
     Text(
       'Index 2: Events',
       style: optionStyle,
@@ -51,9 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Sample'),
         automaticallyImplyLeading: false,
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
+      body: _widgetOptions.elementAt(_selectedIndex),
       floatingActionButton: FloatingActionButton(
         onPressed: getImage,
       ),

@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Saviour.prefs.getString(Saviour.PREF_LOGGED_IN) ?? false
+      home: Saviour.prefs.getBool(Saviour.PREF_LOGGED_IN) ?? false
           ? HomeScreen()
           : LoginScreen(),
     );
