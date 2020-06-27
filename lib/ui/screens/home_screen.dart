@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:saviour/data/model/near_by_issue.dart';
 import 'package:saviour/ui/widgets/home_widget.dart';
+import 'package:saviour/ui/screens/upload_issue_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -62,20 +61,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    File _image;
     final picker = ImagePicker();
 
     Future getImage() async {
       final pickedFile = await picker.getImage(source: ImageSource.gallery);
+      if (pickedFile == null) return;
       if (pickedFile.path == null) return;
-      setState(() {
-        _image = File(pickedFile.path);
-      });
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return UploadIssueScreen(imagePath: pickedFile.path);
+          },
+        ),
+      );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sample'),
+        title: const Text('Saviour'),
         automaticallyImplyLeading: false,
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
