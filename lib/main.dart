@@ -36,10 +36,12 @@ class MyApp extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     return MaterialApp(
       title: 'Saviour',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.lightGreen,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         brightness: Brightness.dark,
+        primaryColorBrightness: Brightness.dark,
         backgroundColor: Colors.black,
         primaryColor: Colors.blueGrey[900],
         accentColor: Colors.greenAccent[700],
@@ -50,6 +52,9 @@ class MyApp extends StatelessWidget {
           headline1: TextStyle(color: Colors.white),
           headline2: TextStyle(color: Colors.white),
           headline3: TextStyle(color: Colors.white),
+          headline4: TextStyle(color: Colors.white),
+          headline5: TextStyle(color: Colors.white),
+          overline: TextStyle(color: Colors.white),
         ),
       ),
       home: Saviour.prefs.getBool(Saviour.PREF_LOGGED_IN) ?? false

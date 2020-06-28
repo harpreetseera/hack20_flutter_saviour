@@ -45,12 +45,14 @@ class EventListWidget extends StatelessWidget {
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 30,
+                                  color: Colors.black,
                                 ),
                               ),
                               Text(
                                 DateFormat.MMM().format(DateFormat("yMMMd")
                                     .parse(eventList[index].startDate)),
                                 textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.black),
                               ),
                             ],
                           ),
@@ -136,7 +138,8 @@ class EventListWidget extends StatelessWidget {
                                 onPressed: () {
                                   FirebaseService firebaseService =
                                       FirebaseServiceImpl();
-                                  var users = List<String>.from(eventList[index].users);
+                                  var users =
+                                      List<String>.from(eventList[index].users);
                                   users.add(Saviour.prefs
                                       .getString(Saviour.PREF_EMAIL));
                                   firebaseService.updateEvent(

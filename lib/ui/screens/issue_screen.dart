@@ -229,7 +229,7 @@ class _IssueScreenState extends State<IssueScreen> {
       var res = await signOutGoogle();
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (BuildContext context) => LoginScreen()),
-        ModalRoute.withName('/'),
+        (Route<dynamic> route) => false,
       );
     } else if (value == 'Settings') {}
   }

@@ -33,7 +33,9 @@ class _EventScreenState extends State<EventScreen> {
           PopupMenuButton<String>(
             onSelected: handleClick,
             itemBuilder: (BuildContext context) {
-              return {'Logout',}.map((String choice) {
+              return {
+                'Logout',
+              }.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Text(
@@ -93,10 +95,10 @@ class _EventScreenState extends State<EventScreen> {
 
   void handleClick(String value) async {
     if (value == 'Logout') {
-      var res = await signOutGoogle();
+      await signOutGoogle();
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (BuildContext context) => LoginScreen()),
-        ModalRoute.withName('/'),
+        (Route<dynamic> route) => false,
       );
     } else if (value == 'Settings') {}
   }
