@@ -51,6 +51,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Create Event"),
@@ -170,7 +172,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     // ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: RaisedButton(
+                      child: MaterialButton(
                         onPressed: () {
                           if (_formKey.currentState.validate()) {
                             final event = Event(
@@ -191,6 +193,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                             firebaseService.createEvent(event);
                           }
                         },
+                        color: theme.accentColor,
                         child: Text('Upload'),
                       ),
                     ),

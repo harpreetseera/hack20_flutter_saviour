@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter_heatmap/google_maps_flutter_heatmap.dart';
@@ -29,18 +30,19 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: <Widget>[
           Expanded(
-              flex: 8,
-              child: Container(
-                color: Colors.transparent,
-                child: GoogleMap(
-                  mapType: MapType.hybrid,
-                  initialCameraPosition: _kGooglePlex,
-                  heatmaps: _heatmaps,
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                  },
-                ),
-              )),
+            flex: 8,
+            child: Container(
+              color: Colors.transparent,
+              child: GoogleMap(
+                mapType: MapType.hybrid,
+                initialCameraPosition: _kGooglePlex,
+                heatmaps: _heatmaps,
+                onMapCreated: (GoogleMapController controller) {
+                  _controller.complete(controller);
+                },
+              ),
+            ),
+          ),
           Expanded(
               flex: 2,
               child: Container(
@@ -49,24 +51,70 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                      MaterialButton(
-                        onPressed:
-                            // _goToTheLake,
-
-                            () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => IssueScreen()));
-                        },
-                        color: Colors.red,
-                        child: Text("Issues"),
+                      Expanded(
+                        flex: 1,
+                        child: ClipRect(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: ExactAssetImage('assets/events.jpg'),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            child: BackdropFilter(
+                              filter:
+                                  ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.0)),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                      MaterialButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => EventScreen()));
-                        },                        color: Colors.purple,
-                        child: Text("Events"),
-                      )
+                      Expanded(
+                        flex: 1,
+                        child: ClipRect(
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: <Widget>[
+                              Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: ExactAssetImage('assets/events.jpg'),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(
+                                    sigmaX: 2.0,
+                                    sigmaY: 2.0,
+                                  ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.8),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Center(
+                                child: Text(
+                                  "Issues",
+                                  style: TextStyle(color: Colors.white, fontSize: 24),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      // MaterialButton(
+                      //   onPressed: () {
+                      //     Navigator.of(context).push(MaterialPageRoute(
+                      //         builder: (context) => EventScreen()));
+                      //   },
+                      //   color: Colors.purple,
+                      //   child: Text("Events"),
+                      // )
                     ],
                   ),
                 ),

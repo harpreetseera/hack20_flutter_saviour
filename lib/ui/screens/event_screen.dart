@@ -10,15 +10,22 @@ class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text("Event Screen")),
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Events"),
+        elevation: 0.5,
+      ),
+      body: Center(
+        child: Text("Event Screen")),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.edit),
         onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => CreateEventScreen()));
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => CreateEventScreen()));
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      backgroundColor: Colors.white,
     );
   }
 }
