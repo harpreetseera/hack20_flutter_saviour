@@ -94,7 +94,10 @@ class IssueWidget extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 12.0),
                     child: Text(
                       "${nearByIssueList[index].users.length} people are facing this issue",
-                      style: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w800),
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800),
                       textAlign: TextAlign.start,
                     ),
                   ),
@@ -142,7 +145,7 @@ class IssueWidget extends StatelessWidget {
                                     "Your issue will be solved soon...",
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: Colors.lightBlue,
+                                      color: Colors.amber,
                                     ),
                                   ),
                                 ),

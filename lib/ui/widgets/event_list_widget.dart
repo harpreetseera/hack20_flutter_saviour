@@ -104,7 +104,7 @@ class EventListWidget extends StatelessWidget {
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 4.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: <Widget>[
                         Icon(Icons.timer),
@@ -126,11 +126,15 @@ class EventListWidget extends StatelessWidget {
                             children: <Widget>[
                               Expanded(
                                 flex: 1,
-                                child: Text(
-                                  "Would like to join?",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.lightBlue,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                  child: Text(
+                                    "Would like to join?",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.lightBlue,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -156,11 +160,15 @@ class EventListWidget extends StatelessWidget {
                             children: <Widget>[
                               Expanded(
                                 flex: 1,
-                                child: Text(
-                                  "Thanks for showing interest",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.lightBlue,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                                  child: Text(
+                                    "Thanks for showing interest",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.amber,
+                                    ),
                                   ),
                                 ),
                               ),
