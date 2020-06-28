@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:saviour/data/event.dart';
@@ -56,8 +55,11 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Create Event"),
+        centerTitle: true,
+        title: Text('Create Event'),
+        elevation: 0.5,
       ),
+      backgroundColor: Colors.blueGrey[900],
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
