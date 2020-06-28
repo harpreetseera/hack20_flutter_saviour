@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:saviour/data/issue.dart';
 import 'package:saviour/service/firebase_service.dart';
-import 'package:saviour/ui/widgets/home_widget.dart';
 import 'package:saviour/ui/screens/upload_issue_screen.dart';
+import 'package:saviour/ui/widgets/issue_widget.dart';
+import 'package:saviour/utils/saviour.dart';
 
 class IssueScreen extends StatefulWidget {
   @override
@@ -24,10 +25,12 @@ class _IssueScreenState extends State<IssueScreen> {
   ];
 
   void _onItemTapped(int index) {
-    getMyIssues();
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index != 1) {
+      getMyIssues();
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   @override
@@ -41,7 +44,8 @@ class _IssueScreenState extends State<IssueScreen> {
     final picker = ImagePicker();
 
     Future getImage(ImageSource imageSource) async {
-      final pickedFile = await picker.getImage(source: imageSource);
+      final pickedFile =
+          await picker.getImage(source: imageSource, imageQuality: 50);
       if (pickedFile == null) return;
       if (pickedFile.path == null) return;
       Navigator.of(context).push(
@@ -61,15 +65,27 @@ class _IssueScreenState extends State<IssueScreen> {
               child: new Wrap(
                 children: <Widget>[
                   new ListTile(
-                      leading: new Icon(Icons.camera),
-                      title: new Text('Take from camera'),
+                      leading: new Icon(
+                        Icons.camera,
+                        color: Colors.lightGreen,
+                      ),
+                      title: new Text(
+                        'Take from camera',
+                        style: TextStyle(color: Colors.white),
+                      ),
                       onTap: () => {
                             Navigator.pop(context),
                             getImage(ImageSource.camera),
                           }),
                   new ListTile(
-                    leading: new Icon(Icons.photo),
-                    title: new Text('Choose from gallery'),
+                    leading: new Icon(
+                      Icons.photo,
+                      color: Colors.lightGreen,
+                    ),
+                    title: new Text(
+                      'Choose from gallery',
+                      style: TextStyle(color: Colors.white),
+                    ),
                     onTap: () => {
                       Navigator.pop(context),
                       getImage(ImageSource.gallery),
@@ -83,12 +99,20 @@ class _IssueScreenState extends State<IssueScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Saviour'),
-        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: Text(_selectedIndex == 0
+            ? 'All Issues'
+            : _selectedIndex == 2 ? 'My Issues' : ''),
+        elevation: 0.5,
       ),
+      backgroundColor: Colors.blueGrey[900],
       body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        backgroundColor: Colors.red,
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         onPressed: () {
           _showImagePickerSheet();
         },
@@ -97,20 +121,22 @@ class _IssueScreenState extends State<IssueScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Home'),
+            icon: Icon(Icons.all_inclusive),
+            title: Text('All Issues'),
           ),
           BottomNavigationBarItem(
             icon: Icon(null),
             title: Text(''),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            title: Text('School'),
+            icon: Icon(Icons.person),
+            title: Text('My Issues'),
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
+        backgroundColor: Colors.blueGrey[900],
+        selectedItemColor: Colors.lightGreen,
+        unselectedItemColor: Colors.grey[400],
         onTap: _onItemTapped,
       ),
     );
@@ -153,7 +179,9 @@ class _IssueScreenState extends State<IssueScreen> {
 
   static Widget myIssuesWidget() {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('issues').snapshots(),
+      stream: Firestore.instance.collection('issues')
+      .where('created_by', isEqualTo: Saviour.prefs.getString(Saviour.PREF_EMAIL))
+      .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (!snapshot.hasData)
           return Center(
