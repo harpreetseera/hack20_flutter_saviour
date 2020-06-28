@@ -2,9 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:saviour/data/issue.dart';
 
-class HomeWidget extends StatelessWidget {
+class IssueWidget extends StatelessWidget {
   List<Issue> nearByIssueList;
-  HomeWidget({@required this.nearByIssueList});
+  IssueWidget({@required this.nearByIssueList});
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
