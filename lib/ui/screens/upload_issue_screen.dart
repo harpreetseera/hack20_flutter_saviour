@@ -36,6 +36,7 @@ class _UploadIssueScreenState extends State<UploadIssueScreen> {
           padding: const EdgeInsets.all(2.0),
           child: FilterChip(
             label: Text(item),
+            checkmarkColor: Colors.lightGreen,
             selected: selectedChoices.contains(item),
             onSelected: (selected) {
               setState(() {
@@ -56,97 +57,199 @@ class _UploadIssueScreenState extends State<UploadIssueScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             children: <Widget>[
-              Image.file(
-                new File(widget.imagePath),
-                width: 100,
-                height: 100,
+              Row(
+                children: <Widget>[
+                  Text(
+                    "Image Selected for issue:",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
-              Form(
-                key: _formKey,
-                child: Column(
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15),
+                    ),
+                  ),
+                  child: Image.file(
+                    new File(widget.imagePath),
+                    width: double.maxFinite,
+                    height: MediaQuery.of(context).size.height * 0.4,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Row(
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please enter title';
-                          }
-                          return null;
-                        },
-                        controller: titleController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Title',
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please enter description';
-                          }
-                          return null;
-                        },
-                        controller: descriptionController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Description',
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Wrap(
-                        children: _buildChoiceList(),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: RaisedButton(
-                        onPressed: () async {
-                          if (_formKey.currentState.validate() &&
-                              selectedChoices.isNotEmpty) {
-                            Location location =
-                                await LocationResult.getLocationNow();
-                            firebaseService
-                                .uploadImage(new File(widget.imagePath))
-                                .then((imageUrl) {
-                              final issue = Issue(
-                                id: Guid().generateV4(),
-                                description: descriptionController.text,
-                                title: titleController.text,
-                                imageUrl: imageUrl,
-                                tags: selectedChoices,
-                                status: "OPEN",
-                                users: [
-                                  Saviour.prefs.getString(Saviour.PREF_EMAIL) ??
-                                      "email_unavailable"
-                                ],
-                                location: GeoPoint(location.lat, location.long),
-                                createdBy: Saviour.prefs
-                                        .getString(Saviour.PREF_EMAIL) ??
-                                    "email_unavailable",
-                              );
-                              firebaseService.createIssue(issue);
-                            });
-                          }
-                        },
-                        child: Text('Upload'),
+                    Text(
+                      "Details for issue:",
+                      style: TextStyle(
+                        color: Colors.white,
                       ),
                     ),
                   ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: TextFormField(
+                          style: TextStyle(color: Colors.white),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please enter title';
+                            }
+                            return null;
+                          },
+                          controller: titleController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Title',
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: TextFormField(
+                          style: TextStyle(color: Colors.white),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Please enter description';
+                            }
+                            return null;
+                          },
+                          controller: descriptionController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Description',
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "Tag your issue:",
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0, 8, 8, 8.0),
+                        child: Wrap(
+                          children: _buildChoiceList(),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15))),
+                          onPressed: () async {
+                            if (_formKey.currentState.validate() &&
+                                selectedChoices.isNotEmpty) {
+                              Location location =
+                                  await LocationResult.getLocationNow();
+                              if (location != null) {
+                                showLoader();
+                                firebaseService
+                                    .uploadImage(new File(widget.imagePath))
+                                    .then((imageUrl) async {
+                                  final issue = Issue(
+                                    id: Guid().generateV4(),
+                                    description: descriptionController.text,
+                                    title: titleController.text,
+                                    imageUrl: imageUrl,
+                                    tags: selectedChoices,
+                                    status: "OPEN",
+                                    users: [
+                                      Saviour.prefs
+                                              .getString(Saviour.PREF_EMAIL) ??
+                                          "email_unavailable"
+                                    ],
+                                    location:
+                                        GeoPoint(location.lat, location.long),
+                                    createdBy: Saviour.prefs
+                                            .getString(Saviour.PREF_EMAIL) ??
+                                        "email_unavailable",
+                                  );
+
+                                  var res =
+                                      await firebaseService.createIssue(issue);
+                                  Navigator.of(context).pop();
+                                  if (res) {
+                                    Navigator.of(context).pop();
+                                  }
+                                });
+                              }
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Raise Issue',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  void showLoader() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(
+                      Colors.lightGreen,
+                    ),
+                  ),
+                  Text("Raising Issue",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ))
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

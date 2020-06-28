@@ -6,7 +6,7 @@ import 'package:saviour/data/event.dart';
 import 'package:saviour/data/issue.dart';
 
 abstract class FirebaseService {
-  void createIssue(Issue issue);
+  Future<bool> createIssue(Issue issue);
   Future<List<Issue>> getNearbyIssues();
   Future<String> uploadImage(File file);
 
@@ -19,8 +19,9 @@ class FirebaseServiceImpl implements FirebaseService {
   static const String KEY_EVENTS = "events";
 
   @override
-  void createIssue(Issue issue) async {
-    await databaseReference.collection(KEY_ISSUES).add(issue.toMap());
+  Future<bool> createIssue(Issue issue) async {
+    var res = await databaseReference.collection(KEY_ISSUES).add(issue.toMap());
+    return res == null ? false : true;
   }
 
   @override
