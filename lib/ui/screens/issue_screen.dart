@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:saviour/data/issue.dart';
+import 'package:saviour/service/firebase_service.dart';
 import 'package:saviour/ui/widgets/home_widget.dart';
 import 'package:saviour/ui/screens/upload_issue_screen.dart';
 
@@ -10,26 +13,27 @@ class IssueScreen extends StatefulWidget {
 
 class _IssueScreenState extends State<IssueScreen> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static List<Issue> nearbyIssueList = [];
+  static List<Issue> myIssueList = [];
+
+  final FirebaseService firebaseService = FirebaseServiceImpl();
   List<Widget> _widgetOptions = <Widget>[
-    IssueWidget(
-      nearByIssueList: [],
-    ),
-    // Text(
-    //   'Index 1: Upload',
-    //   style: optionStyle,
-    // ),
-    Text(
-      'Index 2: Events',
-      style: optionStyle,
-    ),
+    nearByIssueWidget(),
+    Offstage(),
+    myIssuesWidget(),
   ];
 
   void _onItemTapped(int index) {
+    getMyIssues();
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    getNearbyIssueList();
+    super.initState();
   }
 
   @override
@@ -82,7 +86,7 @@ class _IssueScreenState extends State<IssueScreen> {
         title: const Text('Saviour'),
         automaticallyImplyLeading: false,
       ),
-      body: _widgetOptions.elementAt(_selectedIndex),
+      body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
@@ -109,6 +113,62 @@ class _IssueScreenState extends State<IssueScreen> {
         selectedItemColor: Colors.amber[800],
         onTap: _onItemTapped,
       ),
+    );
+  }
+
+  void getNearbyIssueList() async {
+    List<Issue> resultList = await firebaseService.getNearbyIssues();
+    setState(() {
+      nearbyIssueList = resultList;
+    });
+  }
+
+  void getMyIssues() async {
+    List<Issue> resultList = await firebaseService.getNearbyIssues();
+    setState(() {
+      myIssueList = resultList;
+    });
+  }
+
+  static Widget nearByIssueWidget() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('issues').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData)
+          return Center(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              CircularProgressIndicator(),
+              new Text('Loading nearby issues'),
+            ],
+          ));
+        List<Issue> issueList = List();
+        snapshot.data.documents
+            .forEach((f) => issueList.add(Issue.fromMap(f.data)));
+        return IssueWidget(nearByIssueList: issueList);
+      },
+    );
+  }
+
+  static Widget myIssuesWidget() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('issues').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData)
+          return Center(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              CircularProgressIndicator(),
+              new Text('Loading your issues'),
+            ],
+          ));
+        List<Issue> issueList = List();
+        snapshot.data.documents
+            .forEach((f) => issueList.add(Issue.fromMap(f.data)));
+        return IssueWidget(nearByIssueList: issueList);
+      },
     );
   }
 }

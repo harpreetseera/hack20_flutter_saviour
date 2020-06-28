@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:saviour/data/issue.dart';
 
 class IssueWidget extends StatelessWidget {
-  List<Issue> nearByIssueList;
+  final List<Issue> nearByIssueList;
   IssueWidget({@required this.nearByIssueList});
   @override
   Widget build(BuildContext context) {
