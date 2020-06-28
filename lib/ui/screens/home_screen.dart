@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter_heatmap/google_maps_flutter_heatmap.dart';
+import 'package:saviour/ui/screens/event_screen.dart';
 import 'package:saviour/ui/screens/issue_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -46,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.yellow,
                 child: Center(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       MaterialButton(
                         onPressed: _goToTheLake,
@@ -59,11 +61,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Text("Issues"),
                       ),
                       MaterialButton(
-                        onPressed:
-                            // () {
-                            _addHeatmap,
-                        // },
-                        color: Colors.purple,
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => EventScreen()));
+                        },                        color: Colors.purple,
                         child: Text("Events"),
                       )
                     ],
