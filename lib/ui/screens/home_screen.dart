@@ -29,9 +29,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: <Widget>[
           Expanded(
-              flex: 7,
+              flex: 8,
               child: Container(
-                color: Colors.green,
+                color: Colors.transparent,
                 child: GoogleMap(
                   mapType: MapType.hybrid,
                   initialCameraPosition: _kGooglePlex,
@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               )),
           Expanded(
-              flex: 3,
+              flex: 2,
               child: Container(
                 color: Colors.yellow,
                 child: Center(

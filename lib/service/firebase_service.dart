@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:saviour/data/event.dart';
 import 'package:saviour/data/issue.dart';
 
 abstract class FirebaseService {
@@ -9,18 +10,17 @@ abstract class FirebaseService {
   Future<List<Issue>> getNearbyIssues();
   Future<String> uploadImage(File file);
 
-  void createEvent();
+  void createEvent(Event event);
 }
 
 class FirebaseServiceImpl implements FirebaseService {
   var databaseReference = Firestore.instance;
   static const String KEY_ISSUES = "issues";
+  static const String KEY_EVENTS = "events";
 
   @override
   void createIssue(Issue issue) async {
-    var result =
-        await databaseReference.collection(KEY_ISSUES).add(issue.toMap());
-    print(result);
+    await databaseReference.collection(KEY_ISSUES).add(issue.toMap());
   }
 
   @override
@@ -47,7 +47,9 @@ class FirebaseServiceImpl implements FirebaseService {
   }
 
   @override
-  void createEvent() {
+  void createEvent(Event event) async {
+    var result =
+        await databaseReference.collection(KEY_EVENTS).add(event.toMap());
+    print(result);
   }
-
 }

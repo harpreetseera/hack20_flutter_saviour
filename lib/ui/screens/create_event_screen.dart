@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:saviour/data/event.dart';
 import 'package:saviour/service/firebase_service.dart';
+import 'package:saviour/utils/guid.dart';
+import 'package:saviour/utils/saviour.dart';
 
 class CreateEventScreen extends StatefulWidget {
   @override
@@ -8,6 +12,7 @@ class CreateEventScreen extends StatefulWidget {
 }
 
 class _CreateEventScreenState extends State<CreateEventScreen> {
+  final FirebaseService firebaseService = FirebaseServiceImpl();
   final _formKey = GlobalKey<FormState>();
   var selectedDate = DateTime.now();
   var time = TimeOfDay.now();
@@ -51,112 +56,151 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         title: Text("Create Event"),
       ),
       body: SingleChildScrollView(
-          child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: <Widget>[
-            Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: TextFormField(
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter title';
-                        }
-                        return null;
-                      },
-                      controller: titleController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Title',
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: TextFormField(
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter description';
-                        }
-                        return null;
-                      },
-                      controller: descriptionController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Description',
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: InkWell(
-                      onTap: () {
-                        _selectDate(
-                            context); // Call Function that has showDatePicker()
-                      },
-                      child: IgnorePointer(
-                        child: TextFormField(
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter start date';
-                            }
-                            return null;
-                          },
-                          controller: startDateController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Start date',
-                          ),
-                          keyboardType: TextInputType.datetime,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: <Widget>[
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter title';
+                          }
+                          return null;
+                        },
+                        controller: titleController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Title',
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: InkWell(
-                      onTap: () {
-                        _selectTime(); // Call Function that has showDatePicker()
-                      },
-                      child: IgnorePointer(
-                        child: TextFormField(
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please enter start time';
-                            }
-                            return null;
-                          },
-                          controller: startTimeController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Start time',
-                          ),
-                          keyboardType: TextInputType.datetime,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter description';
+                          }
+                          return null;
+                        },
+                        controller: descriptionController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Description',
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: RaisedButton(
-                      onPressed: () async {
-                        if (_formKey.currentState.validate()) {
-                          FirebaseService firebaseService = FirebaseServiceImpl();
-                        }
-                      },
-                      child: Text('Upload'),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: InkWell(
+                        onTap: () {
+                          _selectDate(context);
+                        },
+                        child: IgnorePointer(
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter start date';
+                              }
+                              return null;
+                            },
+                            controller: startDateController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Start date',
+                            ),
+                            keyboardType: TextInputType.datetime,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: InkWell(
+                        onTap: () {
+                          _selectTime();
+                        },
+                        child: IgnorePointer(
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter start time';
+                              }
+                              return null;
+                            },
+                            controller: startTimeController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Start time',
+                            ),
+                            keyboardType: TextInputType.datetime,
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(top: 16.0),
+                    //   child: InkWell(
+                    //     onTap: () {
+                    //       // _selectTime(); // Call Function that has showDatePicker()
+                    //     },
+                    //     child: IgnorePointer(
+                    //       child: TextFormField(
+                    //         validator: (value) {
+                    //           if (value.isEmpty) {
+                    //             return 'Please enter location';
+                    //           }
+                    //           return null;
+                    //         },
+                    //         controller: startTimeController,
+                    //         decoration: InputDecoration(
+                    //           border: OutlineInputBorder(),
+                    //           labelText: 'Location',
+                    //         ),
+                    //         keyboardType: TextInputType.datetime,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: RaisedButton(
+                        onPressed: () {
+                          if (_formKey.currentState.validate()) {
+                            final event = Event(
+                                id: Guid().generateV4(),
+                                title: titleController.text,
+                                description: descriptionController.text,
+                                startDate: startDateController.text,
+                                startTime: startTimeController.text,
+                                location: GeoPoint(-10.0, 6.0),
+                                createdBy: Saviour.prefs
+                                        .getString(Saviour.PREF_EMAIL) ??
+                                    "email_unavailable",
+                                users: [
+                                  Saviour.prefs.getString(Saviour.PREF_EMAIL) ??
+                                      "email_unavailable"
+                                ],
+                                status: "OPEN");
+                            firebaseService.createEvent(event);
+                          }
+                        },
+                        child: Text('Upload'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      )),
+      ),
     );
   }
 }
