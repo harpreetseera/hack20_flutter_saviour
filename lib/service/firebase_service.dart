@@ -9,6 +9,7 @@ abstract class FirebaseService {
   Future<bool> createIssue(Issue issue);
   Future<List<Issue>> getNearbyIssues();
   Future<String> uploadImage(File file);
+  Future<Null> updateIssue(String id, List<String> userList);
 
   Future<Null> createEvent(Event event);
   Future<List<Event>> getEvents();
@@ -50,13 +51,27 @@ class FirebaseServiceImpl implements FirebaseService {
   }
 
   @override
+  Future<Null> updateIssue(String id, List<String> userList) async {
+    await databaseReference
+        .collection(KEY_ISSUES)
+        .where('id', isEqualTo: id)
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((f) => databaseReference
+          .collection(KEY_ISSUES)
+          .document(f.documentID)
+          .updateData({'users': userList}));
+    });
+  }
+
+  @override
   Future<Null> createEvent(Event event) async {
     var result =
         await databaseReference.collection(KEY_EVENTS).add(event.toMap());
     print(result);
   }
 
-   @override
+  @override
   Future<List<Event>> getEvents() async {
     List<Event> eventList = List();
     await databaseReference
@@ -76,10 +91,9 @@ class FirebaseServiceImpl implements FirebaseService {
         .getDocuments()
         .then((QuerySnapshot snapshot) {
       snapshot.documents.forEach((f) => databaseReference
-        .collection(KEY_EVENTS)
-        .document(f.documentID)
-        .updateData({ 'users': userList}));
+          .collection(KEY_EVENTS)
+          .document(f.documentID)
+          .updateData({'users': userList}));
     });
   }
-  
 }
