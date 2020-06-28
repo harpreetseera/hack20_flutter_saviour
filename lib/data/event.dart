@@ -7,7 +7,7 @@ class Event {
   String description;
   String startDate;
   String startTime;
-  GeoPoint location;
+  String location;
   String createdBy;
   List<dynamic> users;
   String status;
