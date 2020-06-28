@@ -10,6 +10,7 @@ class IssueWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: nearByIssueList.length,
+      physics: BouncingScrollPhysics(),
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.all(8.0),

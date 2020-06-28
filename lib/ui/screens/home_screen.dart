@@ -211,6 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
           points: _createPoints(_heatmapLocation),
           radius: 20,
           visible: true,
+          
           gradient: HeatmapGradient(
               colors: <Color>[Colors.green, Colors.red],
               startPoints: <double>[0.2, 0.8])));

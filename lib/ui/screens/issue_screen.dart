@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:saviour/data/issue.dart';
 import 'package:saviour/service/firebase_service.dart';
+import 'package:saviour/ui/screens/login_screen.dart';
 import 'package:saviour/ui/screens/upload_issue_screen.dart';
 import 'package:saviour/ui/widgets/issue_widget.dart';
+import 'package:saviour/utils/auth_utils.dart';
 import 'package:saviour/utils/saviour.dart';
 
 class IssueScreen extends StatefulWidget {
@@ -104,6 +106,26 @@ class _IssueScreenState extends State<IssueScreen> {
             ? 'All Issues'
             : _selectedIndex == 2 ? 'My Issues' : ''),
         elevation: 0.5,
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected: handleClick,
+            itemBuilder: (BuildContext context) {
+              return {
+                'Logout',
+              }.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(
+                    choice,
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                );
+              }).toList();
+            },
+          ),
+        ],
       ),
       backgroundColor: Colors.blueGrey[900],
       body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
@@ -179,9 +201,11 @@ class _IssueScreenState extends State<IssueScreen> {
 
   static Widget myIssuesWidget() {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('issues')
-      .where('created_by', isEqualTo: Saviour.prefs.getString(Saviour.PREF_EMAIL))
-      .snapshots(),
+      stream: Firestore.instance
+          .collection('issues')
+          .where('created_by',
+              isEqualTo: Saviour.prefs.getString(Saviour.PREF_EMAIL))
+          .snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (!snapshot.hasData)
           return Center(
@@ -198,5 +222,15 @@ class _IssueScreenState extends State<IssueScreen> {
         return IssueWidget(nearByIssueList: issueList);
       },
     );
+  }
+
+  void handleClick(String value) async {
+    if (value == 'Logout') {
+      var res = await signOutGoogle();
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (BuildContext context) => LoginScreen()),
+        ModalRoute.withName('/'),
+      );
+    } else if (value == 'Settings') {}
   }
 }
