@@ -47,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.yellow,
                 child: Center(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       MaterialButton(
                         onPressed:
@@ -61,11 +62,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       MaterialButton(
                         onPressed: () {
-                          // _addHeatmap,
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => EventScreen()));
-                        },
-                        color: Colors.purple,
+                        },                        color: Colors.purple,
                         child: Text("Events"),
                       )
                     ],

@@ -8,6 +8,8 @@ abstract class FirebaseService {
   void createIssue(Issue issue);
   Future<List<Issue>> getNearbyIssues();
   Future<String> uploadImage(File file);
+
+  void createEvent();
 }
 
 class FirebaseServiceImpl implements FirebaseService {
@@ -43,4 +45,9 @@ class FirebaseServiceImpl implements FirebaseService {
 
     return await downloadUrl.ref.getDownloadURL();
   }
+
+  @override
+  void createEvent() {
+  }
+
 }
