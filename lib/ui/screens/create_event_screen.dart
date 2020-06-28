@@ -18,6 +18,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   var time = TimeOfDay.now();
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
+  final addressController = TextEditingController();
   final startDateController = TextEditingController();
   final startTimeController = TextEditingController();
 
@@ -146,30 +147,22 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                         ),
                       ),
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.only(top: 16.0),
-                    //   child: InkWell(
-                    //     onTap: () {
-                    //       // _selectTime(); // Call Function that has showDatePicker()
-                    //     },
-                    //     child: IgnorePointer(
-                    //       child: TextFormField(
-                    //         validator: (value) {
-                    //           if (value.isEmpty) {
-                    //             return 'Please enter location';
-                    //           }
-                    //           return null;
-                    //         },
-                    //         controller: startTimeController,
-                    //         decoration: InputDecoration(
-                    //           border: OutlineInputBorder(),
-                    //           labelText: 'Location',
-                    //         ),
-                    //         keyboardType: TextInputType.datetime,
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter address';
+                          }
+                          return null;
+                        },
+                        controller: addressController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Address',
+                        ),
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: MaterialButton(
@@ -181,7 +174,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                 description: descriptionController.text,
                                 startDate: startDateController.text,
                                 startTime: startTimeController.text,
-                                location: GeoPoint(-10.0, 6.0),
+                                location: addressController.text,
                                 createdBy: Saviour.prefs
                                         .getString(Saviour.PREF_EMAIL) ??
                                     "email_unavailable",
@@ -190,7 +183,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                       "email_unavailable"
                                 ],
                                 status: "OPEN");
-                            firebaseService.createEvent(event);
+                            firebaseService.createEvent(event).then(
+                                  (value) => Navigator.pop(context),
+                                );
                           }
                         },
                         color: theme.accentColor,

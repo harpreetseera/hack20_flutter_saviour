@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter_heatmap/google_maps_flutter_heatmap.dart';
 import 'package:saviour/data/issue.dart';
 import 'package:saviour/data/location.dart';
@@ -50,6 +51,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            "Saviour",
+            style: GoogleFonts.fredokaOne(),
+          ),
+          bottomOpacity: 0.5,
+          elevation: 0.5,
+        ),
         body: Column(
           children: <Widget>[
             Expanded(
@@ -87,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: MediaQuery.of(context).size.height * 0.2,
                               width: MediaQuery.of(context).size.width,
                               decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.6),
+                                color: Colors.black.withOpacity(0.8),
                                 borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(15),
                                   topRight: Radius.circular(15),

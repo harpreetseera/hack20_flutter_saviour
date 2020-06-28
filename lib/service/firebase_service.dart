@@ -10,7 +10,9 @@ abstract class FirebaseService {
   Future<List<Issue>> getNearbyIssues();
   Future<String> uploadImage(File file);
 
-  void createEvent(Event event);
+  Future<Null> createEvent(Event event);
+  Future<List<Event>> getEvents();
+  Future<Null> updateEvent(String id, List<String> userList);
 }
 
 class FirebaseServiceImpl implements FirebaseService {
@@ -48,9 +50,36 @@ class FirebaseServiceImpl implements FirebaseService {
   }
 
   @override
-  void createEvent(Event event) async {
+  Future<Null> createEvent(Event event) async {
     var result =
         await databaseReference.collection(KEY_EVENTS).add(event.toMap());
     print(result);
   }
+
+   @override
+  Future<List<Event>> getEvents() async {
+    List<Event> eventList = List();
+    await databaseReference
+        .collection(KEY_EVENTS)
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((f) => eventList.add(Event.fromMap(f.data)));
+    });
+    return eventList;
+  }
+
+  @override
+  Future<Null> updateEvent(String id, List<String> userList) async {
+    await databaseReference
+        .collection(KEY_EVENTS)
+        .where('id', isEqualTo: id)
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents.forEach((f) => databaseReference
+        .collection(KEY_EVENTS)
+        .document(f.documentID)
+        .updateData({ 'users': userList}));
+    });
+  }
+  
 }
