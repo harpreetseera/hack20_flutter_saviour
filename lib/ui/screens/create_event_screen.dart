@@ -168,8 +168,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: MaterialButton(
-                        onPressed: () {
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15))),
+                        onPressed: () async {
                           if (_formKey.currentState.validate()) {
+                            showLoader();
                             final event = Event(
                                 id: Guid().generateV4(),
                                 title: titleController.text,
@@ -185,13 +189,23 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                                       "email_unavailable"
                                 ],
                                 status: "OPEN");
-                            firebaseService.createEvent(event).then(
-                                  (value) => Navigator.pop(context),
-                                );
+                            await firebaseService
+                                .createEvent(event)
+                                .then((value) {
+                              Navigator.of(context).pop();
+
+                              Navigator.of(context).pop();
+                            });
                           }
                         },
-                        color: theme.accentColor,
-                        child: Text('Upload'),
+                        color: Colors.lightGreen,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Create Event',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -201,6 +215,36 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void showLoader() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(
+                      Colors.lightGreen,
+                    ),
+                  ),
+                  Text("Creating Event",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ))
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

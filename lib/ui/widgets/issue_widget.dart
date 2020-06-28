@@ -142,7 +142,7 @@ class IssueWidget extends StatelessWidget {
                                 Expanded(
                                   flex: 1,
                                   child: Text(
-                                    "Your issue will be solved soon...",
+                                    "Your issue will be resolved soon...",
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: Colors.amber,

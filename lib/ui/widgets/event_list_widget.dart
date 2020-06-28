@@ -11,6 +11,7 @@ class EventListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      physics: BouncingScrollPhysics(),
       itemCount: eventList.length,
       itemBuilder: (context, index) {
         return Padding(
