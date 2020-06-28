@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter_heatmap/google_maps_flutter_heatmap.dart';
+import 'package:saviour/data/issue.dart';
 import 'package:saviour/data/location.dart';
 import 'package:saviour/ui/screens/event_screen.dart';
 import 'package:saviour/ui/screens/issue_screen.dart';
@@ -16,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   Completer<GoogleMapController> _controller = Completer();
   Set<Heatmap> _heatmaps = {};
+  StreamSubscription heatPointSubscription;
   CameraPosition kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 0,
@@ -30,8 +33,17 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     updateCurrentlocation();
-    updateHeatMap();
+    heatPointSubscription =
+        Firestore.instance.collection('issues').snapshots().listen((event) {
+      updateHeatMap(event);
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    heatPointSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -187,5 +199,24 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void updateHeatMap() {}
+  void updateHeatMap(QuerySnapshot event) {
+    _heatmaps.clear();
+    event.documents.forEach((f) {
+      Issue issue = Issue.fromMap(f.data);
+      LatLng _heatmapLocation =
+          LatLng(issue.location.latitude, issue.location.longitude);
+
+      _heatmaps.add(Heatmap(
+          heatmapId: HeatmapId(_heatmapLocation.toString()),
+          points: _createPoints(_heatmapLocation),
+          radius: 20,
+          visible: true,
+          gradient: HeatmapGradient(
+              colors: <Color>[Colors.green, Colors.red],
+              startPoints: <double>[0.2, 0.8])));
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
 }
