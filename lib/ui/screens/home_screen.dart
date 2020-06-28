@@ -9,6 +9,8 @@ import 'package:saviour/data/issue.dart';
 import 'package:saviour/data/location.dart';
 import 'package:saviour/ui/screens/event_screen.dart';
 import 'package:saviour/ui/screens/issue_screen.dart';
+import 'package:saviour/ui/screens/login_screen.dart';
+import 'package:saviour/utils/auth_utils.dart';
 import 'package:saviour/utils/location_util.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -59,6 +61,26 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           bottomOpacity: 0.5,
           elevation: 0.5,
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              onSelected: handleClick,
+              itemBuilder: (BuildContext context) {
+                return {
+                  'Logout',
+                }.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(
+                      choice,
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  );
+                }).toList();
+              },
+            ),
+          ],
         ),
         body: Column(
           children: <Widget>[
@@ -77,6 +99,34 @@ class _HomeScreenState extends State<HomeScreen> {
                           _controller.complete(controller);
                         }
                       },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top:24.0),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream: Firestore.instance
+                            .collection('tip_of_the_day')
+                            .snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<QuerySnapshot> snapshot) {
+                          if (!snapshot.hasData) return Offstage();
+
+                          return Container(
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.5),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(24,8,24,8),
+                                child: Text(
+                                    "* TIP OF THE DAY *\n\n${snapshot.data.documents[0]["value"]}",
+                                    textAlign: TextAlign.center,),
+                              ));
+                        },
+                      ),
                     ),
                   ),
                   Positioned(
@@ -221,7 +271,6 @@ class _HomeScreenState extends State<HomeScreen> {
           points: _createPoints(_heatmapLocation),
           radius: 20,
           visible: true,
-          
           gradient: HeatmapGradient(
               colors: <Color>[Colors.green, Colors.red],
               startPoints: <double>[0.2, 0.8])));
@@ -229,5 +278,15 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {});
       }
     });
+  }
+
+  void handleClick(String value) async {
+    if (value == 'Logout') {
+      var res = await signOutGoogle();
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (BuildContext context) => LoginScreen()),
+        (Route<dynamic> route) => false,
+      );
+    } else if (value == 'Settings') {}
   }
 }
