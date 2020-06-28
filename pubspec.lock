@@ -184,6 +184,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.4"
+  google_maps_flutter_heatmap:
+    dependency: "direct main"
+    description:
+      name: google_maps_flutter_heatmap
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1+2"
   google_sign_in:
     dependency: "direct main"
     description:
