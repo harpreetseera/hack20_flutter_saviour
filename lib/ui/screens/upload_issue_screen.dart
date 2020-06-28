@@ -20,7 +20,18 @@ class UploadIssueScreen extends StatefulWidget {
 
 class _UploadIssueScreenState extends State<UploadIssueScreen> {
   final _formKey = GlobalKey<FormState>();
-  final List<String> categoryList = ["Garbage", "Water"];
+  final List<String> categoryList = [
+    "Garbage",
+    "Drainage",
+    "Water pollution",
+    "Public health issue",
+    "Accident",
+    "Soil degradation",
+    "Air pollution",
+    "Animal abuse",
+    "Deforestation",
+  ];
+
   final FirebaseService firebaseService = FirebaseServiceImpl();
   List<String> selectedChoices = List();
 
