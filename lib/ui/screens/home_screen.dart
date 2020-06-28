@@ -3,8 +3,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter_heatmap/google_maps_flutter_heatmap.dart';
+import 'package:saviour/data/location.dart';
 import 'package:saviour/ui/screens/event_screen.dart';
 import 'package:saviour/ui/screens/issue_screen.dart';
+import 'package:saviour/utils/location_util.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -13,10 +15,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Completer<GoogleMapController> _controller = Completer();
-  final Set<Heatmap> _heatmaps = {};
-  static final CameraPosition _kGooglePlex = CameraPosition(
+  Set<Heatmap> _heatmaps = {};
+  CameraPosition kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
+    zoom: 0,
   );
   LatLng _heatmapLocation = LatLng(37.42796133580664, -122.085749655962);
   static final CameraPosition _kLake = CameraPosition(
@@ -24,102 +26,121 @@ class _HomeScreenState extends State<HomeScreen> {
       target: LatLng(37.43296265331129, -122.08832357078792),
       tilt: 59.440717697143555,
       zoom: 19.151926040649414);
+
+  @override
+  void initState() {
+    updateCurrentlocation();
+    updateHeatMap();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            flex: 8,
-            child: Container(
-              color: Colors.transparent,
-              child: GoogleMap(
-                mapType: MapType.hybrid,
-                initialCameraPosition: _kGooglePlex,
-                heatmaps: _heatmaps,
-                onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
-                },
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    color: Colors.transparent,
+                    child: GoogleMap(
+                      key: UniqueKey(),
+                      mapType: MapType.hybrid,
+                      initialCameraPosition: kGooglePlex,
+                      heatmaps: _heatmaps,
+                      onMapCreated: (GoogleMapController controller) {
+                        if (!_controller.isCompleted) {
+                          _controller.complete(controller);
+                        }
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    child: Container(
+                      height: 100,
+                      width: double.maxFinite,
+                      // color: Colors.green.withOpacity(0.9),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          BackdropFilter(
+                            filter: ImageFilter.blur(
+                              sigmaX: 0.0,
+                              sigmaY: 0.0,
+                            ),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.2,
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.6),
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(15),
+                                  topRight: Radius.circular(15),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  OutlineButton(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: new Text(
+                                          "ISSUES",
+                                          style: TextStyle(
+                                              color: Colors.lightGreen,
+                                              fontSize: 18),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    IssueScreen()));
+                                      },
+                                      borderSide:
+                                          BorderSide(color: Colors.lightGreen),
+                                      shape: new RoundedRectangleBorder(
+                                          borderRadius:
+                                              new BorderRadius.circular(15.0))),
+                                  OutlineButton(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: new Text(
+                                          "EVENTS",
+                                          style: TextStyle(
+                                              color: Colors.lightGreen,
+                                              fontSize: 18),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EventScreen()));
+                                      },
+                                      borderSide: BorderSide(
+                                        color: Colors.lightGreen,
+                                      ),
+                                      shape: new RoundedRectangleBorder(
+                                          borderRadius:
+                                              new BorderRadius.circular(15.0)))
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
-          ),
-          Expanded(
-              flex: 2,
-              child: Container(
-                color: Colors.yellow,
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      Expanded(
-                        flex: 1,
-                        child: ClipRect(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: ExactAssetImage('assets/events.jpg'),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            child: BackdropFilter(
-                              filter:
-                                  ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.0)),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: ClipRect(
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: <Widget>[
-                              Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: ExactAssetImage('assets/events.jpg'),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                child: BackdropFilter(
-                                  filter: ImageFilter.blur(
-                                    sigmaX: 2.0,
-                                    sigmaY: 2.0,
-                                  ),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.black.withOpacity(0.8),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Center(
-                                child: Text(
-                                  "Issues",
-                                  style: TextStyle(color: Colors.white, fontSize: 24),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      // MaterialButton(
-                      //   onPressed: () {
-                      //     Navigator.of(context).push(MaterialPageRoute(
-                      //         builder: (context) => EventScreen()));
-                      //   },
-                      //   color: Colors.purple,
-                      //   child: Text("Events"),
-                      // )
-                    ],
-                  ),
-                ),
-              ))
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -154,4 +175,17 @@ class _HomeScreenState extends State<HomeScreen> {
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
   }
+
+  void updateCurrentlocation() async {
+    Location location = await LocationResult.getLocationNow();
+    kGooglePlex = CameraPosition(
+      target: LatLng(location.lat, location.long),
+      zoom: 1,
+    );
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void updateHeatMap() {}
 }
